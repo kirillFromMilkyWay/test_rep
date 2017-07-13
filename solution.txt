@@ -1,0 +1,56 @@
+from sys import stdin
+import copy
+
+
+class MatrixError(BaseException):
+    def __init__(self, m1, m2):
+        self.matrix1 = m1
+        self.matrix2 = m2
+
+
+class Matrix:
+    def __init__(self, lst=list()):
+        self.lst = copy.deepcopy(lst)
+
+    def size(self):
+        if len(self.lst) > 0:
+            return (len(self.lst), len(self.lst[0]))
+        else:
+            return (0, 0)
+
+    def __str__(self):
+        string = str()
+        for i in self.lst:
+            string += "\t".join(str(j) for j in i) + "\n"
+        return string[:-1]
+
+    def __add__(self, other):
+        if self.size() != other.size():
+            error = MatrixError(self, other)
+            raise error
+        r = list()
+        for i in range(len(self.lst)):
+            r.append(list(map(lambda x, y: x + y, self.lst[i], other.lst[i])))
+        return Matrix(r)
+
+    def __mul__(self, number):
+        result = list()
+        for i in range(len(self.lst)):
+            result.append(list(map(lambda x: x * number, self.lst[i])))
+        return Matrix(result)
+
+    def __rmul__(self, number):
+        result = list()
+        for i in range(len(self.lst)):
+            result.append(list(map(lambda x: x * number, self.lst[i])))
+        return Matrix(result)
+
+    def transpose(self):
+        self.lst = zip(*self.lst)
+        return Matrix(self.lst)
+
+    def transposed(self):
+        tmatrix = zip(*self.lst)
+        return Matrix(tmatrix)
+
+exec(stdin.read())
